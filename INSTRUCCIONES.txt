@@ -1,0 +1,36 @@
+
+Tener Git instalado y conectado a R
+Tener token de GitHub y ligado a R
+
+1. Clonar el repositorio por primera vez (Solo si aún no se tiene de forma local)
+Abrir RStudio, New Project > Version Control > Git  y pegar URL: https://github.com
+
+2. Siempre hacer "Pull" antes de empezar a trabajar: Antes de editar cualquier archivo (como el dashboard o el reporte) o de pegar los archivos .rds, abrir la Terminal en su RStudio y 
+correr el código: git pull origin master. Esto descargará la última versión y evitará duplicar código
+
+3. Los gráficos con extensión .rds estarán guardados directamente en la raíz de la carpeta del proyecto usando estrictamente estos nombres en minúsculas:
+
+	.) grafico_general.rds
+	.) grafico_pca.rds
+	.) grafico_kmeans.rds
+	.) grafico_conclusiones.rds
+
+4. Editar el Dashboard (index.Rmd) o el Reporte (Anime.Rmd) Si se realizan mejoras de formato o texto al dashboard o al reporte, modificar los archivos .Rmd directamente. Una vez
+hecho esto, volver a compilar los HTML desde la consola de R con:
+
+	rmarkdown::render("Anime.Rmd", output_file = "reporte_analisis.html")
+	rmarkdown::render("index.Rmd", output_file = "index.html")
+
+5. Finalmente, una vez se hayan hecho los cambios, para que estos se reflejen en el URL público y en el repositorio en la rama master, introducir las siguientes instrucciones en la
+terminal desde r studio: 
+
+	# 1. Agrega todos los cambios realizados
+		git add .
+
+	# 2. Escribe un mensaje del cambio realizado  (ejemplo)
+		git commit -m "Feat: Agregar gráfico de PCA y mejoras de texto en el dashboard"
+
+	# 3. Sube los cambios a la rama master
+		git push origin master
+
+
