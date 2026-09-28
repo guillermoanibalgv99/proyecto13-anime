@@ -1,0 +1,771 @@
+---
+title: "Análisis de Anime con la API de AniList"
+author: "Equipo 13"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_float: true
+---
+```{r setup, include=FALSE}
+# Configuración global para ocultar todo el código del reporte
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+## Contexto del Problema
+La industria del anime ha pasado de ser un nicho de entretenimiento a un fenómeno global masivo. Sin embargo, la clasificación tradicional basada únicamente en géneros temáticos es insuficiente para entender el comportamiento de la audiencia. Comprender las dimensiones ocultas del éxito de una serie permite a las plataformas de streaming mitigar riesgos de inversión y optimizar estrategias de adquisición de licencias.
+
+**Audiencia del proyecto:** Analistas de contenido, gerentes de adquisición y estrategas de plataformas de entretenimiento digital.
+
+## Pregunta de Investigación
+¿Se pueden identificar agrupaciones (clústeres) ocultas de anime basándonos en la relación entre su formato, sus géneros principales y su impacto en la audiencia (popularidad y calificación)?
+
+### Documentación de la Fuente y Población
+* **Fuente de Datos:** Debido a intermitencias de estabilidad en los servidores de la API de AniList (GraphQL) durante la fase de recolección, se utilizó un *snapshot* estático de la base de datos alojado en Kaggle. Esto garantiza la reproducibilidad del análisis.
+* **Población y Muestra:** El universo consta de 20,425 registros. La muestra efectiva para el modelado excluirá a las observaciones sin calificación o popularidad, ya que imposibilitan medir su impacto real.
+
+Para demostrar la capacidad técnica de conexión en vivo y validar la estructura original, se presenta una prueba de concepto conectando a la API de AniList vía GraphQL para extraer los 5 animes más populares. Para el resto del modelado, se utilizará el *snapshot* en CSV para evitar bloqueos por límites de peticiones (Rate Limits) en extracciones masivas.
+
+<!-- ```{r api-prueba, message=FALSE, warning=FALSE} -->
+<!-- library(httr) -->
+<!-- library(jsonlite) -->
+
+<!-- # Prueba de concepto: Conexión a API GraphQL -->
+<!-- query <- ' -->
+<!-- query { -->
+<!--   Page(page: 1, perPage: 5) { -->
+<!--     media(type: ANIME, sort: POPULARITY_DESC) { -->
+<!--       id -->
+<!--       title { romaji } -->
+<!--       format -->
+<!--       episodes -->
+<!--       averageScore -->
+<!--       popularity -->
+<!--     } -->
+<!--   } -->
+<!-- } -->
+<!-- ' -->
+<!-- respuesta <- POST("https://graphql.anilist.co", body = list(query = query), encode = "json") -->
+
+<!-- if (status_code(respuesta) == 200) { -->
+<!--   datos_api <- fromJSON(content(respuesta, as = "text", encoding = "UTF-8"), flatten = TRUE) -->
+<!--   knitr::kable(datos_api$data$Page$media, caption = "Prueba de Conexión: Top 5 API AniList") -->
+<!-- } else { -->
+<!--   print("La API de AniList se encuentra en mantenimiento temporal.") -->
+<!-- } -->
+<!-- ``` -->
+
+```{r message=FALSE, warning=FALSE}
+# 1. Cargamos las librerías necesarias para la limpieza de datos
+library(dplyr)
+
+# 2. Leemos el archivo CSV y lo guardamos en un Data Frame llamado "df_anime"
+# El parámetro stringsAsFactors = FALSE evita que R convierta los textos en categorías automáticamente por ahora
+anime <- read.csv("anilist_anime.csv", stringsAsFactors = FALSE)
+
+# 3. Primer vistazo a la estructura de la base de datos
+print("¡Archivo cargado con éxito! Aquí están las dimensiones (filas y columnas):")
+print(dim(anime))
+
+print("Nombres de las columnas disponibles:")
+print(names(anime))
+
+# 4. Revisamos los primeros 5 registros
+head(anime)
+
+# 5. Para ver la estructura, las columnas y el tipo de dato
+str(anime)
+
+# 6. Construimos el Diccionario de Datos
+diccionario_anime <- data.frame(
+  Columna = names(anime),
+  Tipo = sapply(anime, class),
+  
+  # 7. Calculamos el porcentaje de "basura" o nulos reales
+  # (Consideramos NA, textos en blanco "", y listas vacías "[]")
+  Pct_Vacios = sapply(anime, function(x) {
+    round(sum(is.na(x) | x == "" | x == "[]") / length(x) * 100, 2)
+  }),
+  
+  # 8. Extraemos el primer valor como ejemplo para saber qué contiene
+  Ejemplo = sapply(anime, function(x) as.character(x[1])),
+  
+  stringsAsFactors = FALSE
+) |>
+  # 9. Ordenamos de las columnas más vacías a las más llenas
+  arrange(desc(Pct_Vacios))
+
+# 10. Desplegamos la tabla
+knitr::kable(head(diccionario_anime, 10))
+```
+
+## Limpieza y Transformación de Datos
+
+**Exploración Inicial y Dimensiones del Conjunto de Datos**
+El análisis partió de una base de datos original extraída en formato CSV que consta de 20,425 registros (observaciones) y 62 variables. Para garantizar la calidad y representatividad del modelo de clustering, se realizó una auditoría estructural inicial creando un Diccionario de Datos, lo que permitió evaluar el porcentaje de valores atípicos, nulos (NA) y el tipo de estructura de cada variable.
+
+**Criterios de Exclusión y Reducción de Dimensionalidad**
+Para evitar introducir ruido estadístico y sesgos en el algoritmo matemático, se aplicaron los siguientes criterios de exclusión de variables:
+
+-Alta Faltabilidad (Valores Nulos): Se eliminaron aquellas columnas que presentaban un porcentaje crítico de datos faltantes, listas vacías ([]) o cadenas de texto en blanco. Imputar estadísticamente estas variables habría comprometido la integridad del análisis. 
+
+-Variables de Metadatos y Sistema: Se excluyeron identificadores internos (idMal), enlaces externos (siteUrl, externalLinks), fechas de actualización (updatedAt) y referencias a imágenes (coverImage, bannerImage). Estos datos representan ruido técnico que no aporta varianza matemática para la categorización del anime.
+
+-Información Redundante: Variables como title_english o title_native fueron descartadas en favor de conservar únicamente title_romaji como identificador principal estandarizado.
+
+## Selección de Variables Específicas (Núcleo Analítico)
+Acorde a la pregunta de investigación orientada a descubrir tipologías ocultas según la popularidad y las características de las series, el modelo conservó exclusivamente las variables con mayor densidad de información:
+
+-averageScore y popularity: Como métricas continuas de rendimiento y recepción del público.
+
+-format y episodes: Como características estructurales de la obra.
+
+-genres: Como principal categorizador temático.
+
+```{r}
+# Seleccionamos el núcleo analítico y exportamos la base ligera para subir a GitHub
+df_base_ligera <- anime |>
+  select(
+    id, 
+    title_romaji, 
+    format, 
+    episodes, 
+    averageScore, 
+    popularity, 
+    genres
+  )
+
+saveRDS(df_base_ligera, "df_anime_reducido.rds")
+print("Archivo 'df_anime_reducido' generado exitosamente.")
+```
+
+
+## Transformación y Limpieza de Cadenas (Data Wrangling)
+
+Durante la exploración se detectó que las variables categóricas clave, como los géneros (genres), se encontraban anidadas bajo una sintaxis heredada de formato JSON (ej. ["Drama", "Fantasy"]). Para permitir que el modelo interpretara estas características correctamente, se aplicaron técnicas de expresiones regulares (Regex) para limpiar los caracteres especiales (corchetes y comillas), estandarizando el texto y preparándolo para la posterior creación de variables dummy (One-Hot Encoding).
+Finalmente, se eliminaron los registros puntuales que no contaban con una calificación registrada (averageScore), ya que representaban un valor faltante imposible de evaluar para el objetivo principal de este análisis.
+
+```{r}
+library(dplyr)
+library(stringr)
+
+anime_crudo <- readRDS("df_anime_reducido.rds")
+
+#Creamos la base de datos limpia aplicando transformaciones
+anime_limpio <- anime_crudo |>
+  
+  # Limpiamos la columna de géneros de los caracteres extraños (JSON)
+  mutate(
+    genres_limpio = str_replace_all(genres, "[\\[\\]\\\"\\\\]", ""),
+    genres_limpio = ifelse(genres_limpio == "", NA, genres_limpio)
+  ) |>
+  
+  # Borramos la columna 'genres' sucia original y conservamos solo la limpia
+  select(-genres) |>
+  
+  # Filtramos los registros que carecen de calificación o de género
+  filter(!is.na(averageScore) & !is.na(genres_limpio))
+
+# Comprobamos las dimensiones finales (filas y columnas)
+cat("Dimensiones de la base limpia:", dim(anime_limpio), "\n\n")
+
+# Desplegamos la tabla transformada para el reporte
+knitr::kable(head(anime_limpio, 10))
+
+```
+
+# Análisis de componentes principales (PCA)
+
+El objetivo del PCA es resumir la información de las variables numéricas del conjunto de animes y facilitar la identificación de patrones. Para este análisis se utilizaron el número de episodios, la valoración promedio y la popularidad.
+Revisión de variables numéricas
+Primero se revisan las estadísticas descriptivas y los valores faltantes de las variables que serán utilizadas.
+
+```{r}
+# Resumen estadístico de las variables numéricas 
+summary(anime_limpio[, c( "episodes", "averageScore", "popularity" )]) 
+# Comprobar valores faltantes 
+colSums(is.na(anime_limpio[, c( "episodes", "averageScore", "popularity" )]))
+```
+
+# Revisión de formatos y géneros
+También se revisa la distribución de los formatos y algunos registros de géneros para conocer la estructura de los datos.
+```{r}
+# Frecuencia de cada formato
+table(anime_limpio$format)
+
+# Primeros registros de géneros
+head(anime_limpio$genres_limpio, 20)
+```
+#Transformación de variables
+Las variables episodes y popularity presentan distribuciones asimétricas y valores extremos. Para reducir su influencia se aplica la transformación logarítmica log1p().
+```{r}
+# Crear una copia de la base para el análisis PCA
+anime_pca <- anime_limpio 
+# Aplicar transformación logarítmica 
+anime_pca$log_popularity <- log1p(anime_pca$popularity) 
+anime_pca$log_episodes <- log1p(anime_pca$episodes) 
+# Eliminar registros sin información sobre episodios 
+anime_pca <- anime_pca[!is.na(anime_pca$episodes), ] 
+# Comprobar nuevamente los valores faltantes 
+colSums(is.na(anime_pca[, c( "log_episodes", "averageScore", "log_popularity" )]))
+```
+
+# Distribución de las variables
+Se comparan las distribuciones originales y transformadas para observar el efecto de log1p().
+```{r}
+# Distribución original de popularidad
+hist(
+  anime_limpio$popularity,
+  main = "Distribución original de popularidad",
+  xlab = "Popularidad"
+)
+
+# Distribución original de episodios
+hist(
+  anime_limpio$episodes,
+  main = "Distribución original de episodios",
+  xlab = "Episodios"
+)
+# Distribución transformada de popularidad
+hist(
+  anime_pca$log_popularity,
+  main = "Distribución de popularidad después de log1p",
+  xlab = "log(1 + popularidad)"
+)
+
+# Distribución transformada de episodios
+hist(
+  anime_pca$log_episodes,
+  main = "Distribución de episodios después de log1p",
+  xlab = "log(1 + episodios)"
+)
+```
+La transformación permite reducir la asimetría de las variables de episodios y popularidad, haciendo más adecuada su utilización en el análisis multivariado.
+# Preparación de los datos para PCA
+
+Para el PCA se utilizan las tres variables cuantitativas transformadas. Las variables identificadoras y las variables categóricas se reservan para etapas posteriores.
+```{r}
+# Seleccionar las variables para el PCA
+datos_pca <- anime_pca[, c( "log_episodes", "averageScore", "log_popularity" )]
+head(datos_pca)
+```
+# Aplicación del PCA
+
+Se aplica prcomp() con centrado y estandarización. Esto evita que las diferentes escalas de las variables influyan de manera desproporcionada en los componentes.
+```{r}
+# Ejecutar PCA 
+pca <- prcomp( datos_pca, center = TRUE, scale. = TRUE )
+summary(pca)
+```
+El primer componente (PC1) explica el 62.28% de la varianza, mientras que el segundo (PC2) explica el 28.63%. En conjunto, ambos componentes representan aproximadamente el 90.90% de la variabilidad.
+#Cargas de los componentes
+Las cargas permiten identificar qué variables contribuyen principalmente a cada componente.
+```{r}
+# Cargas de las variables en cada componente 
+pca$rotation[, 1:3]
+```
+
+PC1 está asociado principalmente con averageScore y log_popularity, mientras que PC2 está fuertemente dominado por log_episodes. Por lo tanto, PC1 representa principalmente una dimensión relacionada con valoración y popularidad, mientras que PC2 representa principalmente una dimensión relacionada con la duración.
+```{r}
+# Desviación estándar de los componentes 
+pca$sdev 
+# Coordenadas de los primeros 10 animes 
+pca$x[1:10, ]
+```
+#Visualización del espacio PCA
+
+Se representan los animes utilizando PC1 y PC2, que concentran la mayor parte de la información del PCA.
+
+```{r}
+# Visualizar los animes en el espacio PC1-PC2 
+plot( pca$x[, 1], pca$x[, 2], xlab = "PC1", ylab = "PC2", main = "PCA de los animes", pch = 19, cex = 0.5 )
+```
+La representación permite observar la distribución general de los animes en las dos principales dimensiones obtenidas.
+
+# Análisis según formato
+Para explorar posibles diferencias entre formatos, primero se convierten los valores vacíos en NA.
+```{r}
+# Convertir formatos vacíos en NA 
+anime_pca$format[anime_pca$format == ""] <- NA 
+# Revisar las categorías de formato 
+table(anime_pca$format, useNA = "ifany")
+```
+Se identifican los registros que cuentan con un formato válido.
+```{r}
+# Identificar registros con formato válido 
+filas_validas <- !is.na(anime_pca$format) 
+# Comprobar el número de observaciones 
+sum(filas_validas) 
+nrow(pca$x)
+```
+Posteriormente se visualizan los formatos dentro del espacio PCA.
+```{r}
+# PCA coloreado según formato 
+plot( pca$x[filas_validas, 1], pca$x[filas_validas, 2], xlab = "PC1", ylab = "PC2", main = "Animes según formato en el espacio PCA", pch = 19, cex = 0.5, col = as.factor(anime_pca$format[filas_validas]) ) 
+# Agregar leyenda 
+legend( "topright", legend = levels(as.factor( anime_pca$format[filas_validas] )), col = 1:length(levels(as.factor( anime_pca$format[filas_validas] ))), pch = 19, cex = 0.8 )
+```
+La distribución muestra diferencias entre formatos. Los MOVIE tienden a presentar valores bajos de PC2, mientras que TV y TV_SHORT presentan una mayor concentración hacia valores altos de PC2. Esto es consistente con la relación entre PC2 y el número de episodios.
+Estos resultados sugieren que el formato está relacionado con las características cuantitativas analizadas, aunque esta visualización por sí sola no demuestra la existencia de clusters.
+
+#Análisis de géneros
+Debido a que un anime puede pertenecer a varios géneros, estos se transforman en indicadores binarios de presencia o ausencia.
+#Frecuencia de géneros
+Primero se identifican los géneros más frecuentes.
+```{r}
+library(dplyr)
+library(tidyr)
+
+# Separar los géneros en filas
+generos_separados <- anime_pca %>%
+  filter(!is.na(genres_limpio)) %>%
+  separate_rows(genres_limpio, sep = ",\\s*") %>%
+  count(genres_limpio, sort = TRUE)
+
+# Mostrar los 20 géneros más frecuentes
+head(generos_separados, 20)
+
+#Se visualizan los 15 géneros con mayor frecuencia.
+
+# Seleccionar los 15 géneros más frecuentes
+top_generos <- generos_separados %>%
+  slice_max(order_by = n, n = 15) %>%
+  arrange(n)
+
+# Gráfico de frecuencia
+barplot(
+  top_generos$n,
+  names.arg = top_generos$genres_limpio,
+  horiz = TRUE,
+  las = 1,
+  main = "15 géneros más frecuentes",
+  xlab = "Número de animes"
+)
+
+#Para el análisis posterior se seleccionan los diez géneros más frecuentes.
+
+# Seleccionar los 10 géneros más frecuentes
+top_10_generos <- generos_separados %>%
+  slice_max(order_by = n, n = 10)
+
+top_10_generos
+```
+
+#Creación de indicadores binarios
+Cada género se convierte en una columna donde 1 indica presencia y 0 ausencia.
+```{r}
+# Crear indicadores binarios para los 10 géneros más frecuentes
+generos_binarios <- anime_pca %>%
+  select(id, genres_limpio) %>%
+  filter(!is.na(genres_limpio)) %>%
+  separate_rows(genres_limpio, sep = ",\\s*") %>%
+  filter(genres_limpio %in% top_10_generos$genres_limpio) %>%
+  mutate(presente = 1) %>%
+  distinct(id, genres_limpio, .keep_all = TRUE) %>%
+  pivot_wider(
+    names_from = genres_limpio,
+    values_from = presente,
+    values_fill = 0
+  )
+
+head(generos_binarios)
+# Revisar dimensiones
+dim(generos_binarios)
+
+# Revisar frecuencia de cada género
+colSums(generos_binarios[, -1])
+```
+#Relación entre géneros y PCA
+
+Se combinan las coordenadas del PCA con los indicadores de género.
+```{r}
+# Convertir las coordenadas del PCA en una tabla
+coordenadas_pca <- as.data.frame(pca$x) %>%
+  mutate(id = anime_pca$id)
+
+# Unir coordenadas y géneros
+anime_pca_generos <- coordenadas_pca %>%
+  left_join(generos_binarios, by = "id")
+
+# Revisar el resultado
+head(anime_pca_generos)
+# Revisar dimensiones
+dim(anime_pca_generos)
+
+# Revisar valores faltantes en las coordenadas PCA
+colSums(
+  is.na(
+    anime_pca_generos[, c(
+      "PC1",
+      "PC2",
+      "PC3"
+    )]
+  )
+)
+
+#S e calcula la posición promedio de cada género dentro del espacio PC1-PC2.
+
+# Calcular posición promedio de cada género
+resultados_generos <- data.frame(
+  genero = names(generos_binarios)[-1]
+)
+
+resultados_generos$n <- sapply(
+  resultados_generos$genero,
+  function(g) {
+    sum(generos_binarios[[g]] == 1)
+  }
+)
+
+resultados_generos$PC1_promedio <- sapply(
+  resultados_generos$genero,
+  function(g) {
+    mean(
+      anime_pca_generos$PC1[
+        anime_pca_generos[[g]] == 1
+      ],
+      na.rm = TRUE
+    )
+  }
+)
+
+resultados_generos$PC2_promedio <- sapply(
+  resultados_generos$genero,
+  function(g) {
+    mean(
+      anime_pca_generos$PC2[
+        anime_pca_generos[[g]] == 1
+      ],
+      na.rm = TRUE
+    )
+  }
+)
+
+resultados_generos
+# Visualizar la posición promedio de los géneros
+plot(
+  resultados_generos$PC1_promedio,
+  resultados_generos$PC2_promedio,
+  pch = 19,
+  xlab = "PC1",
+  ylab = "PC2",
+  main = "Posición promedio de los géneros en el espacio PCA"
+)
+
+text(
+  resultados_generos$PC1_promedio,
+  resultados_generos$PC2_promedio,
+  labels = resultados_generos$genero,
+  pos = 3,
+  cex = 0.8
+)
+
+abline(
+  h = 0,
+  v = 0,
+  lty = 2
+)
+```
+
+Los géneros presentan posiciones promedio diferentes dentro del espacio PCA. Esto indica que algunos géneros muestran tendencias distintas respecto a las dimensiones asociadas con valoración, popularidad y duración. Sin embargo, existe superposición entre ellos, por lo que estas diferencias deben interpretarse como tendencias y no como grupos completamente separados.
+
+# Proceso de clustering
+
+Después del PCA se realiza un análisis de clustering para identificar agrupaciones considerando simultáneamente las variables numéricas, los géneros y los formatos.
+
+# Preparación de los formatos
+Los formatos se convierten en indicadores binarios.
+```{r}
+# Crear indicadores binarios para el formato 
+format_binario <- anime_pca %>% filter(!is.na(format)) %>% select(id, format) %>% mutate(presente = 1) %>% pivot_wider( names_from = format, values_from = presente, values_fill = 0 ) 
+# Revisar resultado 
+head(format_binario) 
+# Revisar cantidad de animes por formato 
+colSums(format_binario[, -1])
+```
+# Construcción de la matriz de clustering
+Se conservan únicamente los registros que cuentan con información suficiente de géneros y formato.
+```{r}
+# Construir la base final para clustering 
+datos_clustering <- anime_pca %>% select( id, log_episodes, averageScore, log_popularity ) %>% inner_join( generos_binarios, by = "id" ) %>% inner_join( format_binario, by = "id" ) 
+# Revisar dimensiones 
+dim(datos_clustering) 
+# Revisar primeras filas 
+head(datos_clustering)
+```
+La variable id únicamente identifica cada anime, por lo que se excluye de la matriz utilizada por k-means.
+```{r}
+# Crear matriz de variables para clustering 
+matriz_clustering <- datos_clustering %>% select(-id) 
+# Comprobar valores faltantes 
+colSums(is.na(matriz_clustering))
+```
+
+Estandarización
+
+Las variables se estandarizan para evitar que las diferencias de escala tengan una influencia desproporcionada en el cálculo de las distancias.
+```{r}
+# Estandarizar las variables 
+matriz_clustering_scaled <- scale(matriz_clustering) 
+# Revisar primeras filas 
+head(matriz_clustering_scaled)
+```
+En este análisis se utiliza k-means sobre una combinación de variables numéricas y binarias. Por ello, los resultados representan agrupaciones obtenidas bajo esta representación de los datos y no categorías naturales o definitivas.
+
+#Selección del número de clusters
+
+Primero se utiliza el método del codo para observar cómo cambia la variabilidad interna al aumentar el número de clusters.
+La gráfica muestra una reducción importante de la variabilidad al aumentar el número de clusters, aunque el punto de inflexión no es completamente evidente. Por ello se comparan las soluciones de k = 3, k = 4 y k = 5 mediante medidas adicionales.
+
+```{r}
+# ============================================================
+# MÉTODO DEL CODO
+# ============================================================
+
+set.seed(123)
+
+inercia <- numeric(10)
+
+for (k in 1:10) {
+  
+  cat("Calculando k =", k, "\n")
+  
+  modelo_k <- kmeans(
+    matriz_clustering_scaled,
+    centers = k,
+    nstart = 10
+  )
+  
+  inercia[k] <- modelo_k$tot.withinss
+  
+  # Eliminar el modelo antes de pasar al siguiente k
+  rm(modelo_k)
+  gc()
+}
+
+# Ver resultados
+inercia
+```
+Aquí no necesitamos una solución definitiva de clustering. El método del codo solamente busca observar cómo disminuye la inercia al aumentar k.
+Además, nstart = 10 reduce aproximadamente a la mitad el número de inicializaciones que kmeans()
+```{r}
+plot(
+  1:10,
+  inercia,
+  type = "b",
+  pch = 19,
+  xlab = "Número de clusters (k)",
+  ylab = "Suma de cuadrados intra-cluster",
+  main = "Método del codo para seleccionar k"
+)
+ls()
+```
+```{r}
+# ============================================================
+# K-MEANS PARA k = 3
+# ============================================================
+
+set.seed(123)
+
+km3 <- kmeans(
+  matriz_clustering_scaled,
+  centers = 3,
+  nstart = 10
+)
+
+gc()
+
+# ============================================================
+# K-MEANS PARA k = 4
+# ============================================================
+
+set.seed(123)
+
+km4 <- kmeans(
+  matriz_clustering_scaled,
+  centers = 4,
+  nstart = 10
+)
+
+gc()
+
+# ============================================================
+# K-MEANS PARA k = 5
+# ============================================================
+
+set.seed(123)
+
+km5 <- kmeans(
+  matriz_clustering_scaled,
+  centers = 5,
+  nstart = 10
+)
+
+gc()
+```
+```{r}
+ls()
+```
+```{r}
+# ============================================================
+# EVALUACIÓN CON SILHOUETTE
+# ============================================================
+
+library(cluster)
+
+set.seed(123)
+
+# Tomar una muestra de 2,000 observaciones
+idx_sil <- sample(
+  seq_len(nrow(matriz_clustering_scaled)),
+  size = min(2000, nrow(matriz_clustering_scaled))
+)
+
+# Matriz de datos de la muestra
+datos_sil <- matriz_clustering_scaled[
+  idx_sil,
+  ,
+  drop = FALSE
+]
+
+# Distancias únicamente entre las 2,000 observaciones
+dist_sil <- dist(datos_sil)
+
+# Silhouette usando los clusters de los modelos completos
+sil3 <- silhouette(
+  km3$cluster[idx_sil],
+  dist_sil
+)
+
+sil4 <- silhouette(
+  km4$cluster[idx_sil],
+  dist_sil
+)
+
+sil5 <- silhouette(
+  km5$cluster[idx_sil],
+  dist_sil
+)
+
+# Comparación
+comparacion_silhouette <- data.frame(
+  k = c(3, 4, 5),
+  silhouette_promedio = c(
+    mean(sil3[, "sil_width"]),
+    mean(sil4[, "sil_width"]),
+    mean(sil5[, "sil_width"])
+  )
+)
+
+comparacion_silhouette
+```
+Los valores obtenidos fueron aproximadamente 0.139 para k = 3, 0.176 para k = 4 y 0.210 para k = 5. Entre las soluciones evaluadas, k = 5 presenta el mayor valor de silhouette, por lo que se utiliza como solución final.
+
+El valor de aproximadamente 0.21 también indica que existe cierta separación entre los grupos, aunque permanece una superposición considerable.
+#Caracterización de la solución k = 5
+Una vez seleccionada la solución de cinco clusters, se analizan sus características principales.
+```{r}
+
+# Tamaño de cada cluster
+table(km5$cluster)
+
+# Agregar la asignación de cluster al dataframe
+datos_clustering$cluster_k5 <- km5$cluster
+
+# Resumen de variables numéricas por cluster
+resumen_k5 <- datos_clustering %>%
+  group_by(cluster_k5) %>%
+  summarise(
+    n = n(),
+    media_episodios = mean(
+      expm1(log_episodes),
+      na.rm = TRUE
+    ),
+    media_score = mean(
+      averageScore,
+      na.rm = TRUE
+    ),
+    media_popularidad = mean(
+      expm1(log_popularity),
+      na.rm = TRUE
+    ),
+    .groups = "drop"
+  )
+
+resumen_k5
+```
+La solución presenta cinco perfiles diferenciados en cuanto a duración, valoración y popularidad. El cluster 1 destaca por presentar el mayor promedio de episodios, score y popularidad, mientras que los demás grupos presentan diferentes combinaciones de estas características.
+
+# Composición por género
+
+Se calcula la proporción de animes pertenecientes a cada uno de los diez géneros seleccionados.
+```{r}
+generos_k5 <- datos_clustering %>% 
+  group_by(cluster_k5) %>% 
+  summarise( across( c( Comedy, Action, Fantasy, Adventure, Drama, `Sci-Fi`, Romance, `Slice of Life`, Supernatural, Hentai ), mean ) ) 
+generos_k5
+```
+Los géneros más frecuentes varían entre los clusters. Comedy, Action y Fantasy aparecen entre los géneros con mayor presencia en varios grupos. Debido a que un anime puede tener más de un género, estas proporciones no deben interpretarse como categorías excluyentes ni sumar necesariamente 100%.
+
+#Composición por formato
+
+También se analiza la composición de cada cluster según el formato.
+```{r}
+formatos_k5 <- datos_clustering %>% 
+  group_by(cluster_k5) %>% 
+  summarise( MOVIE = mean(MOVIE, na.rm = TRUE), TV = mean(TV, na.rm = TRUE), TV_SHORT = mean(TV_SHORT, na.rm = TRUE), SPECIAL = mean(SPECIAL, na.rm = TRUE), MUSIC = mean(MUSIC, na.rm = TRUE), OVA = mean(OVA, na.rm = TRUE), ONA = mean(ONA, na.rm = TRUE), .groups = "drop" ) 
+formatos_k5
+```
+La composición por formato muestra una diferenciación clara entre los grupos:
+
+Cluster 1: principalmente TV (99.8%).
+Cluster 2: principalmente MOVIE (82.3%) y MUSIC (17.7%).
+Cluster 3: prácticamente exclusivamente OVA (100%).
+Cluster 4: exclusivamente SPECIAL (100%).
+Cluster 5: principalmente ONA (72.7%) y TV_SHORT (27.3%).
+
+Esto indica que el formato tiene un papel importante en la formación de los clusters, debido a que fue incorporado explícitamente como variable en el modelo.
+
+# Visualización final de los clusters
+Finalmente, se combinan las coordenadas del PCA con la asignación de clusters para visualizar la solución k = 5 dentro del espacio PC1-PC2.
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# Unir coordenadas PCA con los clusters
+datos_grafico_k5 <- coordenadas_pca %>%
+  left_join(
+    datos_clustering %>%
+      select(id, cluster_k5),
+    by = "id"
+  )
+
+head(datos_grafico_k5)
+# Visualizar los clusters en el espacio PCA
+ggplot(
+  datos_grafico_k5,
+  aes(
+    x = PC1,
+    y = PC2,
+    color = factor(cluster_k5)
+  )
+) +
+  geom_point(
+    alpha = 0.35,
+    size = 1
+  ) +
+  labs(
+    title = "Distribución de los clusters de anime en el espacio PCA",
+    subtitle = "Solución k = 5",
+    x = "Componente Principal 1 (PC1)",
+    y = "Componente Principal 2 (PC2)",
+    color = "Cluster"
+  ) +
+  theme_minimal()
+```
+
+La visualización final permite observar la distribución de los cinco clusters en las dos principales dimensiones del PCA. Se aprecia cierta superposición entre grupos, lo cual es consistente con el valor de silhouette obtenido.
+
+Es importante considerar que el PCA utiliza únicamente las tres variables cuantitativas, mientras que el clustering incorpora además los indicadores de género y formato. Por ello, esta gráfica debe interpretarse como una proyección visual de los clusters, y no como una representación completa de todas las variables utilizadas por k-means.
+
+En conjunto, el análisis permite identificar diferentes perfiles de anime a partir de la combinación de duración, valoración, popularidad, género y formato. El PCA facilita la reducción y visualización de las variables cuantitativas, mientras que el clustering permite complementar esta visión mediante agrupaciones construidas a partir del conjunto ampliado de características.

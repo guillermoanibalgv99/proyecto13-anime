@@ -1,0 +1,107 @@
+---
+title: "Dashboard de Anime: API de AniList"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+# ==========================================
+# Carga de Librerías (Reproducibilidad)
+# ==========================================
+library(flexdashboard)
+library(tidyverse)
+
+# Lógica de carga robusta para tus archivos RDS
+grafico_1 <- if(file.exists("grafico_general.rds")) readRDS("grafico_general.rds") else NULL
+grafico_2 <- if(file.exists("grafico_pca.rds")) readRDS("grafico_pca.rds") else NULL
+grafico_3 <- if(file.exists("grafico_kmeans.rds")) readRDS("grafico_kmeans.rds") else NULL
+grafico_4 <- if(file.exists("grafico_conclusiones.rds")) readRDS("grafico_conclusiones.rds") else NULL
+```
+
+Sidebar {.sidebar}
+=====================================
+
+### 📄 Documentación Completa
+
+Haz clic en el siguiente enlace para abrir el reporte:
+
+👉 [**Ver Reporte de Análisis Lineal**](reporte_analisis.html){target="_blank"}
+
+---
+
+*Nota: Reporte técnico generado bajo criterios de reproducibilidad científica.*
+
+
+Dashboard 1: Vista General
+=====================================
+
+Row
+-------------------------------------
+
+### Análisis de la API de AniList (Popularidad vs Score)
+```{r}
+if (!is.null(grafico_1)) {
+  grafico_1
+} else {
+  htmltools::div(
+    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
+  )
+}
+```
+
+
+Dashboard 2: Análisis PCA
+=====================================
+
+Row
+-------------------------------------
+
+### Reducción de Dimensiones (Componentes Principales)
+```{r}
+if (!is.null(grafico_2)) {
+  grafico_2
+} else {
+  htmltools::div(
+    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
+      )
+}
+```
+
+
+Dashboard 3: Clustering K-Means
+=====================================
+
+Row
+-------------------------------------
+
+### Segmentación de Animes por Características
+```{r}
+if (!is.null(grafico_3)) {
+  grafico_3
+} else {
+  htmltools::div(
+    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
+  )
+}
+```
+
+
+Dashboard 4: Conclusiones
+=====================================
+
+Row
+-------------------------------------
+
+### Hallazgos del Proyecto
+```{r}
+if (!is.null(grafico_4)) {
+  grafico_4
+} else {
+  htmltools::div(
+    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
+  )
+}
+```
