@@ -36,7 +36,7 @@ Haz clic en el siguiente enlace para abrir el reporte:
 
 Para revisar los archivos de código y la reproducibilidad del proyecto, visita nuestro repositorio:
 
-📦 [**Ver Repositorio en GitHub**](https://github.com/guillermoanibalgv99/proyecto13-anime){target="_blank"}
+📦 [**Ver Repositorio en GitHub**](https://github.com/guillermoanibalgv99/proyecto13-anime/tree/master){target="_blank"}
 
 ---
 
