@@ -28,7 +28,15 @@ Sidebar {.sidebar}
 
 Haz clic en el siguiente enlace para abrir el reporte:
 
-👉 [**Ver Reporte de Análisis Lineal**](reporte_analisis.html){target="_blank"}
+👉 [**Ver Reporte de Análisis**](reporte_analisis.html){target="_blank"}
+
+---
+
+### 💻 Código Fuente
+
+Para revisar los archivos de código y la reproducibilidad del proyecto, visita nuestro repositorio:
+
+📦 [**Ver Repositorio en GitHub**](https://github.com/guillermoanibalgv99/proyecto13-anime){target="_blank"}
 
 ---
 
