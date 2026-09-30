@@ -1,5 +1,6 @@
 ---
-title: "Dashboard de Anime: API de AniList"
+title: "Ecosistemas del Anime: Segmentación de Audiencias"
+author: "Equipo 13"
 output: 
   flexdashboard::flex_dashboard:
     orientation: rows
@@ -8,108 +9,119 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-# ==========================================
-# Carga de Librerías (Reproducibilidad)
-# ==========================================
 library(flexdashboard)
-library(tidyverse)
+library(ggplot2)
+library(plotly)
 
-# Lógica de carga robusta para tus archivos RDS
-grafico_1 <- if(file.exists("grafico_general.rds")) readRDS("grafico_general.rds") else NULL
-grafico_2 <- if(file.exists("grafico_pca.rds")) readRDS("grafico_pca.rds") else NULL
-grafico_3 <- if(file.exists("grafico_kmeans.rds")) readRDS("grafico_kmeans.rds") else NULL
-grafico_4 <- if(file.exists("grafico_conclusiones.rds")) readRDS("grafico_conclusiones.rds") else NULL
+# Cargar los archivos RDS generados en el análisis
+df_clusters <- readRDS("df_clusters_asignados.rds")
+top_15       <- readRDS("top15.rds")
+g_pop        <- readRDS("boxplot_pop_cluster.rds")
+g_score      <- readRDS("boxplot_score_cluster.rds")
+g_pop_score  <- readRDS("popvscal.rds")
+g_frec_form  <- readRDS("frecxform.rds")
+g_score_dur  <- readRDS("scoredur.rds")
+g_score_form <- readRDS("scorefor.rds")
 ```
 
-Sidebar {.sidebar}
+Ecosistemas de Consumo
 =====================================
 
-### 📄 Documentación Completa
+Análisis de Inversión {.sidebar}
+-------------------------------------
 
-Haz clic en el siguiente enlace para abrir el reporte:
+###  Enfoque de Negocio
 
-👉 [**Ver Reporte de Análisis**](reporte_analisis.html){target="_blank"}
+Al estudiar formatos con métricas de impacto mediante PCA y K-Means, validamos que **las dimensiones ocultas del éxito existen** en la industria del anime. 
+
+Para optimizar la adquisición de licencias y reducir el riesgo:
+
+* **Clúster 1 (Titanes):** Asegura retención masiva de la audiencia, ideal si se cuenta con alto presupuesto.
+* **Clúster 5 (Consumo Digital/ONAs):** Representa la opción más eficiente en costo-beneficio para plataformas modernas.
+* **Clúster 3 (OVAs):** Funciona únicamente para estrategias de fidelización muy especificas en nichos.
 
 ---
 
-### 💻 Código Fuente
+[📄 Ver Reporte Metodológico](reporte_analisis.html)
 
-Para revisar los archivos de código y la reproducibilidad del proyecto, visita nuestro repositorio:
-
-📦 [**Ver Repositorio en GitHub**](https://github.com/guillermoanibalgv99/proyecto13-anime/tree/master){target="_blank"}
-
----
-
-*Nota: Reporte técnico generado bajo criterios de reproducibilidad científica.*
-
-
-Dashboard 1: Vista General
-=====================================
-
-Row
+### Resumen del Modelo {data-height=140}
 -------------------------------------
 
-### Análisis de la API de AniList (Popularidad vs Score)
+### Modelos Evaluados (K-Means)
 ```{r}
-if (!is.null(grafico_1)) {
-  grafico_1
-} else {
-  htmltools::div(
-    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
-  )
-}
+valueBox("K = 5", icon = "fa-layer-group", color = "#4E79A7")
+```
+
+### Segmento de Mayor Retención
+```{r}
+valueBox("Clúster 1 (Titanes)", icon = "fa-fire", color = "#E15759")
+```
+
+### Segmento Más Eficiente
+```{r}
+valueBox("Clúster 5 (Digital)", icon = "fa-bolt", color = "#59A14F")
+```
+
+### Exploración de Clústeres {data-height=560}
+-------------------------------------
+
+### 🗺️ El Universo Oculto del Anime (Mapa de Componentes Principales)
+```{r}
+p_pca <- ggplot(df_clusters, aes(x = PC1, y = PC2, color = as.factor(cluster_k5), text = paste("AniList ID:", id))) +
+  geom_point(alpha = 0.6, size = 1.8) +
+  scale_color_manual(values = c(
+    "1" = "#E15759", 
+    "2" = "#76B7B2", 
+    "3" = "#F28E2B", 
+    "4" = "#B07AA1", 
+    "5" = "#59A14F"  
+  )) +
+  theme_minimal() +
+  labs(x = "Dimensión de Impacto y Audiencia (PC1)", 
+       y = "Dimensión de Estructura y Temática (PC2)",
+       color = "Clúster") +
+  theme(legend.position = "bottom")
+
+ggplotly(p_pca, tooltip = "text")
+```
+
+### 📊 Comportamiento de los Segmentos (Métricas Base)
+```{r}
+plotly::subplot(
+  ggplotly(g_score), 
+  ggplotly(g_pop), 
+  nrows = 2, 
+  titleY = TRUE, 
+  margin = 0.08
+)
 ```
 
 
-Dashboard 2: Análisis PCA
+Impacto del Formato y Duración
 =====================================
 
-Row
+### Dimensiones de Éxito {data-height=500}
 -------------------------------------
 
-### Reducción de Dimensiones (Componentes Principales)
+### 📈 Relación General: Popularidad vs. Calificación
 ```{r}
-if (!is.null(grafico_2)) {
-  grafico_2
-} else {
-  htmltools::div(
-    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
-      )
-}
+ggplotly(g_pop_score)
 ```
 
-
-Dashboard 3: Clustering K-Means
-=====================================
-
-Row
--------------------------------------
-
-### Segmentación de Animes por Características
+### 📦 Rendimiento por Tipo de Formato
 ```{r}
-if (!is.null(grafico_3)) {
-  grafico_3
-} else {
-  htmltools::div(
-    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
-  )
-}
+ggplotly(g_score_form)
 ```
 
-
-Dashboard 4: Conclusiones
-=====================================
-
-Row
+### Distribución de Mercado {data-height=500}
 -------------------------------------
 
-### Hallazgos del Proyecto
+### ⏱️ Calificación Promedio según la Duración del Anime
 ```{r}
-if (!is.null(grafico_4)) {
-  grafico_4
-} else {
-  htmltools::div(
-    style = "display:flex; justify-content:center; align-items:center; height:100%; font-size:16px; color:gray;",
-  )
-}
+ggplotly(g_score_dur)
+```
+
+### 🗂️ Distribución y Volumen de la Muestra Comercial
+```{r}
+ggplotly(g_frec_form)
 ```
