@@ -9,11 +9,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Equipo 13" />
+<meta name="author" content="Mendoza Díaz Citlali" />
+<meta name="author" content="Peña Romero Gerardo" />
+<meta name="author" content="Ramírez Pérez Gerardo Enrique" />
+<meta name="author" content="Vásquez Rodríguez Iván" />
+<meta name="author" content="Galindez Vergara Guillermo Anibal" />
 
-<meta name="date" content="2026-09-29" />
+<meta name="date" content="2026-09-30" />
 
-<title>Análisis De Perfiles De Anime</title>
+<title>Anime</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1497,9 +1501,13 @@ border-radius: 0px;
 
 
 
-<h1 class="title toc-ignore">Análisis De Perfiles De Anime</h1>
-<h4 class="author">Equipo 13</h4>
-<h4 class="date">2026-09-29</h4>
+<h1 class="title toc-ignore">Anime</h1>
+<h4 class="author">Mendoza Díaz Citlali</h4>
+<h4 class="author">Peña Romero Gerardo</h4>
+<h4 class="author">Ramírez Pérez Gerardo Enrique</h4>
+<h4 class="author">Vásquez Rodríguez Iván</h4>
+<h4 class="author">Galindez Vergara Guillermo Anibal</h4>
+<h4 class="date">2026-09-30</h4>
 
 </div>
 
@@ -1593,7 +1601,7 @@ if (status_code(respuesta) == 200) {
 <td align="left">TV</td>
 <td align="right">25</td>
 <td align="right">85</td>
-<td align="right">1060026</td>
+<td align="right">1060412</td>
 <td align="left">Shingeki no Kyojin</td>
 </tr>
 <tr class="even">
@@ -1601,7 +1609,7 @@ if (status_code(respuesta) == 200) {
 <td align="left">TV</td>
 <td align="right">26</td>
 <td align="right">82</td>
-<td align="right">999033</td>
+<td align="right">999342</td>
 <td align="left">Kimetsu no Yaiba</td>
 </tr>
 <tr class="odd">
@@ -1609,7 +1617,7 @@ if (status_code(respuesta) == 200) {
 <td align="left">TV</td>
 <td align="right">24</td>
 <td align="right">84</td>
-<td align="right">978004</td>
+<td align="right">978315</td>
 <td align="left">Jujutsu Kaisen</td>
 </tr>
 <tr class="even">
@@ -1617,7 +1625,7 @@ if (status_code(respuesta) == 200) {
 <td align="left">TV</td>
 <td align="right">37</td>
 <td align="right">84</td>
-<td align="right">966726</td>
+<td align="right">967047</td>
 <td align="left">DEATH NOTE</td>
 </tr>
 <tr class="odd">
@@ -1625,7 +1633,7 @@ if (status_code(respuesta) == 200) {
 <td align="left">TV</td>
 <td align="right">13</td>
 <td align="right">76</td>
-<td align="right">877949</td>
+<td align="right">878181</td>
 <td align="left">Boku no Hero Academia</td>
 </tr>
 </tbody>
@@ -1645,21 +1653,26 @@ print(&quot;¡Archivo cargado con éxito! Aquí están las dimensiones (filas y 
 <pre class="r"><code>print(&quot;Nombres de las columnas disponibles:&quot;)</code></pre>
 <pre><code>## [1] &quot;Nombres de las columnas disponibles:&quot;</code></pre>
 <pre class="r"><code>print(names(anime))</code></pre>
-<pre><code>##  [1] &quot;X&quot;                        &quot;id&quot;                       &quot;idMal&quot;                    &quot;title_romaji&quot;            
-##  [5] &quot;title_english&quot;            &quot;title_native&quot;             &quot;title_userPreferred&quot;      &quot;type&quot;                    
-##  [9] &quot;format&quot;                   &quot;status&quot;                   &quot;description&quot;              &quot;startDate_year&quot;          
-## [13] &quot;startDate_month&quot;          &quot;startDate_day&quot;            &quot;endDate_year&quot;             &quot;endDate_month&quot;           
-## [17] &quot;endDate_day&quot;              &quot;season&quot;                   &quot;seasonYear&quot;               &quot;seasonInt&quot;               
-## [21] &quot;episodes&quot;                 &quot;duration&quot;                 &quot;chapters&quot;                 &quot;volumes&quot;                 
-## [25] &quot;countryOfOrigin&quot;          &quot;isLicensed&quot;               &quot;source&quot;                   &quot;hashtag&quot;                 
-## [29] &quot;trailer_id&quot;               &quot;trailer_site&quot;             &quot;trailer_thumbnail&quot;        &quot;updatedAt&quot;               
-## [33] &quot;coverImage_extraLarge&quot;    &quot;coverImage_large&quot;         &quot;coverImage_medium&quot;        &quot;coverImage_color&quot;        
-## [37] &quot;bannerImage&quot;              &quot;genres&quot;                   &quot;synonyms&quot;                 &quot;tags&quot;                    
-## [41] &quot;averageScore&quot;             &quot;meanScore&quot;                &quot;popularity&quot;               &quot;favourites&quot;              
-## [45] &quot;trending&quot;                 &quot;rankings&quot;                 &quot;isFavourite&quot;              &quot;isAdult&quot;                 
-## [49] &quot;isLocked&quot;                 &quot;siteUrl&quot;                  &quot;externalLinks&quot;            &quot;streamingEpisodes&quot;       
-## [53] &quot;relations&quot;                &quot;characters&quot;               &quot;staff&quot;                    &quot;studios&quot;                 
-## [57] &quot;nextAiringEpisode&quot;        &quot;airingSchedule&quot;           &quot;recommendations&quot;          &quot;reviews&quot;                 
+<pre><code>##  [1] &quot;X&quot;                        &quot;id&quot;                       &quot;idMal&quot;                   
+##  [4] &quot;title_romaji&quot;             &quot;title_english&quot;            &quot;title_native&quot;            
+##  [7] &quot;title_userPreferred&quot;      &quot;type&quot;                     &quot;format&quot;                  
+## [10] &quot;status&quot;                   &quot;description&quot;              &quot;startDate_year&quot;          
+## [13] &quot;startDate_month&quot;          &quot;startDate_day&quot;            &quot;endDate_year&quot;            
+## [16] &quot;endDate_month&quot;            &quot;endDate_day&quot;              &quot;season&quot;                  
+## [19] &quot;seasonYear&quot;               &quot;seasonInt&quot;                &quot;episodes&quot;                
+## [22] &quot;duration&quot;                 &quot;chapters&quot;                 &quot;volumes&quot;                 
+## [25] &quot;countryOfOrigin&quot;          &quot;isLicensed&quot;               &quot;source&quot;                  
+## [28] &quot;hashtag&quot;                  &quot;trailer_id&quot;               &quot;trailer_site&quot;            
+## [31] &quot;trailer_thumbnail&quot;        &quot;updatedAt&quot;                &quot;coverImage_extraLarge&quot;   
+## [34] &quot;coverImage_large&quot;         &quot;coverImage_medium&quot;        &quot;coverImage_color&quot;        
+## [37] &quot;bannerImage&quot;              &quot;genres&quot;                   &quot;synonyms&quot;                
+## [40] &quot;tags&quot;                     &quot;averageScore&quot;             &quot;meanScore&quot;               
+## [43] &quot;popularity&quot;               &quot;favourites&quot;               &quot;trending&quot;                
+## [46] &quot;rankings&quot;                 &quot;isFavourite&quot;              &quot;isAdult&quot;                 
+## [49] &quot;isLocked&quot;                 &quot;siteUrl&quot;                  &quot;externalLinks&quot;           
+## [52] &quot;streamingEpisodes&quot;        &quot;relations&quot;                &quot;characters&quot;              
+## [55] &quot;staff&quot;                    &quot;studios&quot;                  &quot;nextAiringEpisode&quot;       
+## [58] &quot;airingSchedule&quot;           &quot;recommendations&quot;          &quot;reviews&quot;                 
 ## [61] &quot;stats_scoreDistribution&quot;  &quot;stats_statusDistribution&quot;</code></pre>
 <pre class="r"><code># Revisamos los primeros 5 registros
 head(anime)</code></pre>
@@ -1684,27 +1697,27 @@ head(anime)</code></pre>
 ## 4                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      A cat just wants some alone time with his girl, but is interrupted by his stressed owner. Can&#39;t those stupid humans just keep things like relationships simple?
 ## 5                                                                                                                                                                                                                 This is a short, privately produced animated film. While elucidating the mystery and fuzziness as well as merits and demerits of memory in idealizing reality, the story develops into a tale of destruction of human beings, turning the existence of the earth into a memory of the universe. The production, only 5 minutes long, greatly helps expand the viewer&#39;s imagination, embodying the enchantment of animation.&lt;br&gt;&lt;br&gt;\n(Source: AniDB)
 ## 6                                                                                                                                                                                                                                                                                                                                                                        A man trapped on a raft in the middle of the ocean is in desperate need of water. Luckily for him, a few drops of rain water are about to fall from the raft&#39;s mast. Comedy ensues as the thirsty man attempts to drink the few small drops of water.\n&lt;br&gt;&lt;br&gt;\n(Source: Anime News Network)
-##   startDate_year startDate_month startDate_day endDate_year endDate_month endDate_day season seasonYear seasonInt
-## 1           1962              11             5         1962            11           5   FALL       1962       624
-## 2           1965               8            29         1967             6          28 SUMMER       1965       653
-## 3           1965              10             6         1966             9          28   FALL       1965       654
-## 4           1962              11             5         1962            11           5   FALL       1962       624
-## 5           1964               9            21         1964             9          21   FALL       1964       644
-## 6           1965              10             1         1965            10           1   FALL       1965       654
-##   episodes duration chapters volumes countryOfOrigin isLicensed   source hashtag  trailer_id trailer_site
-## 1        1       38       NA      NA              JP       True ORIGINAL                                 
-## 2       96       25       NA      NA              JP       True    MANGA                                 
-## 3       52       23       NA      NA              JP       True    MANGA                                 
-## 4        1        3       NA      NA              JP       True ORIGINAL         MyN1NXlfJG0      youtube
-## 5        1        5       NA      NA              JP       True ORIGINAL                                 
-## 6        1        4       NA      NA              JP       True ORIGINAL                                 
-##                                  trailer_thumbnail  updatedAt
-## 1                                                  1788639415
-## 2                                                  1788639226
-## 3                                                  1788639194
-## 4 https://i.ytimg.com/vi/MyN1NXlfJG0/hqdefault.jpg 1788641955
-## 5                                                  1788639035
-## 6                                                  1788641955
+##   startDate_year startDate_month startDate_day endDate_year endDate_month endDate_day season
+## 1           1962              11             5         1962            11           5   FALL
+## 2           1965               8            29         1967             6          28 SUMMER
+## 3           1965              10             6         1966             9          28   FALL
+## 4           1962              11             5         1962            11           5   FALL
+## 5           1964               9            21         1964             9          21   FALL
+## 6           1965              10             1         1965            10           1   FALL
+##   seasonYear seasonInt episodes duration chapters volumes countryOfOrigin isLicensed   source
+## 1       1962       624        1       38       NA      NA              JP       True ORIGINAL
+## 2       1965       653       96       25       NA      NA              JP       True    MANGA
+## 3       1965       654       52       23       NA      NA              JP       True    MANGA
+## 4       1962       624        1        3       NA      NA              JP       True ORIGINAL
+## 5       1964       644        1        5       NA      NA              JP       True ORIGINAL
+## 6       1965       654        1        4       NA      NA              JP       True ORIGINAL
+##   hashtag  trailer_id trailer_site                                trailer_thumbnail  updatedAt
+## 1                                                                                   1788639415
+## 2                                                                                   1788639226
+## 3                                                                                   1788639194
+## 4         MyN1NXlfJG0      youtube https://i.ytimg.com/vi/MyN1NXlfJG0/hqdefault.jpg 1788641955
+## 5                                                                                   1788639035
+## 6                                                                                   1788641955
 ##                                                                   coverImage_extraLarge
 ## 1               https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1497.jpg
 ## 2               https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1547.jpg
@@ -1719,13 +1732,20 @@ head(anime)</code></pre>
 ## 4 https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/nx1982-XW3AItdy1oRi.jpg
 ## 5   https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1984-AxWxVpjQzLBB.png
 ## 6   https://s4.anilist.co/file/anilistcdn/media/anime/cover/medium/1989-Dm1rneWQkXBA.png
-##                                                                       coverImage_medium coverImage_color
-## 1                https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1497.jpg          #f1935d
-## 2                https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1547.jpg          #e4d643
-## 3   https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1572-IIMmL0Mpbpop.png          #ffae35
-## 4 https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx1982-XW3AItdy1oRi.jpg                 
-## 5   https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1984-AxWxVpjQzLBB.png          #784328
-## 6   https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1989-Dm1rneWQkXBA.png          #780d0d
+##                                                                       coverImage_medium
+## 1                https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1497.jpg
+## 2                https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1547.jpg
+## 3   https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1572-IIMmL0Mpbpop.png
+## 4 https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/nx1982-XW3AItdy1oRi.jpg
+## 5   https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1984-AxWxVpjQzLBB.png
+## 6   https://s4.anilist.co/file/anilistcdn/media/anime/cover/small/1989-Dm1rneWQkXBA.png
+##   coverImage_color
+## 1          #f1935d
+## 2          #e4d643
+## 3          #ffae35
+## 4                 
+## 5          #784328
+## 6          #780d0d
 ##                                                                       bannerImage
 ## 1  https://s4.anilist.co/file/anilistcdn/media/anime/banner/1497-qivayRHBmgOZ.jpg
 ## 2                                                                                
@@ -3354,23 +3374,24 @@ generos_binarios &lt;- anime_pca %&gt;%
 
 head(generos_binarios)</code></pre>
 <pre><code>## # A tibble: 6 × 11
-##       id Action Drama Fantasy Adventure Supernatural Comedy `Sci-Fi` Romance `Slice of Life` Hentai
-##    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;  &lt;dbl&gt;
-## 1  16498      1     1       1         0            0      0        0       0               0      0
-## 2 101922      1     1       1         1            1      0        0       0               0      0
-## 3 113415      1     1       0         0            1      0        0       0               0      0
-## 4   1535      0     0       0         0            1      0        0       0               0      0
-## 5  21459      1     0       0         1            0      1        0       0               0      0
-## 6  11061      1     0       1         1            0      0        0       0               0      0</code></pre>
+##       id Action Drama Fantasy Adventure Supernatural Comedy `Sci-Fi` Romance `Slice of Life`
+##    &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;
+## 1  16498      1     1       1         0            0      0        0       0               0
+## 2 101922      1     1       1         1            1      0        0       0               0
+## 3 113415      1     1       0         0            1      0        0       0               0
+## 4   1535      0     0       0         0            1      0        0       0               0
+## 5  21459      1     0       0         1            0      1        0       0               0
+## 6  11061      1     0       1         1            0      0        0       0               0
+## # ℹ 1 more variable: Hentai &lt;dbl&gt;</code></pre>
 <pre class="r"><code># Revisar dimensiones
 dim(generos_binarios)</code></pre>
 <pre><code>## [1] 14174    11</code></pre>
 <pre class="r"><code># Revisar frecuencia de cada género
 colSums(generos_binarios[, -1])</code></pre>
-<pre><code>##        Action         Drama       Fantasy     Adventure  Supernatural        Comedy        Sci-Fi       Romance 
-##          4437          2916          3690          3116          1679          5665          2663          2493 
-## Slice of Life        Hentai 
-##          2332          1593</code></pre>
+<pre><code>##        Action         Drama       Fantasy     Adventure  Supernatural        Comedy 
+##          4437          2916          3690          3116          1679          5665 
+##        Sci-Fi       Romance Slice of Life        Hentai 
+##          2663          2493          2332          1593</code></pre>
 </div>
 <div id="relación-entre-géneros-y-pca" class="section level1">
 <h1>Relación entre géneros y PCA</h1>
@@ -3386,20 +3407,20 @@ anime_pca_generos &lt;- coordenadas_pca %&gt;%
 
 # Revisar el resultado
 head(anime_pca_generos)</code></pre>
-<pre><code>##         PC1        PC2        PC3     id Action Drama Fantasy Adventure Supernatural Comedy Sci-Fi Romance
-## 1 -3.989868  0.2141666 -0.6308527  16498      1     1       1         0            0      0      0       0
-## 2 -3.861813  0.1222891 -0.7349491 101922      1     1       1         1            1      0      0       0
-## 3 -3.888376  0.2083270 -0.6649460 113415      1     1       0         0            1      0      0       0
-## 4 -4.020403 -0.1295530 -0.6451899   1535      0     0       0         0            1      0      0       0
-## 5 -3.244542  0.4714414 -1.0940431  21459      1     0       0         1            0      1      0       0
-## 6 -4.714399 -1.1092860 -0.2222821  11061      1     0       1         1            0      0      0       0
-##   Slice of Life Hentai
-## 1             0      0
-## 2             0      0
-## 3             0      0
-## 4             0      0
-## 5             0      0
-## 6             0      0</code></pre>
+<pre><code>##         PC1        PC2        PC3     id Action Drama Fantasy Adventure Supernatural Comedy
+## 1 -3.989868  0.2141666 -0.6308527  16498      1     1       1         0            0      0
+## 2 -3.861813  0.1222891 -0.7349491 101922      1     1       1         1            1      0
+## 3 -3.888376  0.2083270 -0.6649460 113415      1     1       0         0            1      0
+## 4 -4.020403 -0.1295530 -0.6451899   1535      0     0       0         0            1      0
+## 5 -3.244542  0.4714414 -1.0940431  21459      1     0       0         1            0      1
+## 6 -4.714399 -1.1092860 -0.2222821  11061      1     0       1         1            0      0
+##   Sci-Fi Romance Slice of Life Hentai
+## 1      0       0             0      0
+## 2      0       0             0      0
+## 3      0       0             0      0
+## 4      0       0             0      0
+## 5      0       0             0      0
+## 6      0       0             0      0</code></pre>
 <pre class="r"><code># Revisar dimensiones
 dim(anime_pca_generos)</code></pre>
 <pre><code>## [1] 14899    14</code></pre>
@@ -3534,32 +3555,34 @@ dim(datos_clustering) </code></pre>
 <pre><code>## [1] 14174    21</code></pre>
 <pre class="r"><code># Revisar primeras filas 
 head(datos_clustering)</code></pre>
-<pre><code>##       id log_episodes averageScore log_popularity Action Drama Fantasy Adventure Supernatural Comedy Sci-Fi
-## 1  16498     3.258097           85       13.86527      1     1       1         0            0      0      0
-## 2 101922     3.295837           83       13.80673      1     1       1         1            1      0      0
-## 3 113415     3.218876           84       13.78401      1     1       0         0            1      0      0
-## 4   1535     3.637586           84       13.77314      0     0       0         0            1      0      0
-## 5  21459     2.639057           77       13.67816      1     0       0         1            0      1      0
-## 6  11061     5.003946           89       13.63924      1     0       1         1            0      0      0
-##   Romance Slice of Life Hentai TV MOVIE ONA TV_SHORT SPECIAL OVA MUSIC
-## 1       0             0      0  1     0   0        0       0   0     0
-## 2       0             0      0  1     0   0        0       0   0     0
-## 3       0             0      0  1     0   0        0       0   0     0
-## 4       0             0      0  1     0   0        0       0   0     0
-## 5       0             0      0  1     0   0        0       0   0     0
-## 6       0             0      0  1     0   0        0       0   0     0</code></pre>
+<pre><code>##       id log_episodes averageScore log_popularity Action Drama Fantasy Adventure Supernatural
+## 1  16498     3.258097           85       13.86527      1     1       1         0            0
+## 2 101922     3.295837           83       13.80673      1     1       1         1            1
+## 3 113415     3.218876           84       13.78401      1     1       0         0            1
+## 4   1535     3.637586           84       13.77314      0     0       0         0            1
+## 5  21459     2.639057           77       13.67816      1     0       0         1            0
+## 6  11061     5.003946           89       13.63924      1     0       1         1            0
+##   Comedy Sci-Fi Romance Slice of Life Hentai TV MOVIE ONA TV_SHORT SPECIAL OVA MUSIC
+## 1      0      0       0             0      0  1     0   0        0       0   0     0
+## 2      0      0       0             0      0  1     0   0        0       0   0     0
+## 3      0      0       0             0      0  1     0   0        0       0   0     0
+## 4      0      0       0             0      0  1     0   0        0       0   0     0
+## 5      1      0       0             0      0  1     0   0        0       0   0     0
+## 6      0      0       0             0      0  1     0   0        0       0   0     0</code></pre>
 <p>La variable id únicamente identifica cada anime, por lo que se
 excluye de la matriz utilizada por k-means.</p>
 <pre class="r"><code># Crear matriz de variables para clustering 
 matriz_clustering &lt;- datos_clustering %&gt;% select(-id) 
 # Comprobar valores faltantes 
 colSums(is.na(matriz_clustering))</code></pre>
-<pre><code>##   log_episodes   averageScore log_popularity         Action          Drama        Fantasy      Adventure 
-##              0              0              0              0              0              0              0 
-##   Supernatural         Comedy         Sci-Fi        Romance  Slice of Life         Hentai             TV 
-##              0              0              0              0              0              0              0 
-##          MOVIE            ONA       TV_SHORT        SPECIAL            OVA          MUSIC 
-##              0              0              0              0              0              0</code></pre>
+<pre><code>##   log_episodes   averageScore log_popularity         Action          Drama        Fantasy 
+##              0              0              0              0              0              0 
+##      Adventure   Supernatural         Comedy         Sci-Fi        Romance  Slice of Life 
+##              0              0              0              0              0              0 
+##         Hentai             TV          MOVIE            ONA       TV_SHORT        SPECIAL 
+##              0              0              0              0              0              0 
+##            OVA          MUSIC 
+##              0              0</code></pre>
 <p>#Estandarización</p>
 <p>Las variables se estandarizan para evitar que las diferencias de
 escala tengan una influencia desproporcionada en el cálculo de las
@@ -3568,27 +3591,27 @@ distancias.</p>
 matriz_clustering_scaled &lt;- scale(matriz_clustering) 
 # Revisar primeras filas 
 head(matriz_clustering_scaled)</code></pre>
-<pre><code>##      log_episodes averageScore log_popularity     Action     Drama    Fantasy  Adventure Supernatural     Comedy
-## [1,]     1.249859     2.214326       3.097646  1.4813325  1.964814  1.6855242 -0.5308174   -0.3665573 -0.8159159
-## [2,]     1.282625     2.029520       3.065968  1.4813325  1.964814  1.6855242  1.8837543    2.7278938 -0.8159159
-## [3,]     1.215807     2.121923       3.053678  1.4813325  1.964814 -0.5932454 -0.5308174    2.7278938 -0.8159159
-## [4,]     1.579334     2.121923       3.047794 -0.6750203 -0.508918 -0.5932454 -0.5308174    2.7278938 -0.8159159
-## [5,]     0.712405     1.475102       2.996402  1.4813325 -0.508918 -0.5932454  1.8837543   -0.3665573  1.2255301
-## [6,]     2.765617     2.583937       2.975348  1.4813325 -0.508918  1.6855242  1.8837543   -0.3665573 -0.8159159
-##          Sci-Fi    Romance Slice of Life     Hentai       TV      MOVIE      ONA  TV_SHORT    SPECIAL        OVA
-## [1,] -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131 -0.40176 -0.234859 -0.3265648 -0.5645658
-## [2,] -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131 -0.40176 -0.234859 -0.3265648 -0.5645658
-## [3,] -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131 -0.40176 -0.234859 -0.3265648 -0.5645658
-## [4,] -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131 -0.40176 -0.234859 -0.3265648 -0.5645658
-## [5,] -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131 -0.40176 -0.234859 -0.3265648 -0.5645658
-## [6,] -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131 -0.40176 -0.234859 -0.3265648 -0.5645658
-##           MUSIC
-## [1,] -0.1802389
-## [2,] -0.1802389
-## [3,] -0.1802389
-## [4,] -0.1802389
-## [5,] -0.1802389
-## [6,] -0.1802389</code></pre>
+<pre><code>##      log_episodes averageScore log_popularity     Action     Drama    Fantasy  Adventure
+## [1,]     1.249859     2.214326       3.097646  1.4813325  1.964814  1.6855242 -0.5308174
+## [2,]     1.282625     2.029520       3.065968  1.4813325  1.964814  1.6855242  1.8837543
+## [3,]     1.215807     2.121923       3.053678  1.4813325  1.964814 -0.5932454 -0.5308174
+## [4,]     1.579334     2.121923       3.047794 -0.6750203 -0.508918 -0.5932454 -0.5308174
+## [5,]     0.712405     1.475102       2.996402  1.4813325 -0.508918 -0.5932454  1.8837543
+## [6,]     2.765617     2.583937       2.975348  1.4813325 -0.508918  1.6855242  1.8837543
+##      Supernatural     Comedy     Sci-Fi    Romance Slice of Life     Hentai       TV      MOVIE
+## [1,]   -0.3665573 -0.8159159 -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131
+## [2,]    2.7278938 -0.8159159 -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131
+## [3,]    2.7278938 -0.8159159 -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131
+## [4,]    2.7278938 -0.8159159 -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131
+## [5,]   -0.3665573  1.2255301 -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131
+## [6,]   -0.3665573 -0.8159159 -0.4809653 -0.4619615     -0.443748 -0.3558238 1.554108 -0.4141131
+##           ONA  TV_SHORT    SPECIAL        OVA      MUSIC
+## [1,] -0.40176 -0.234859 -0.3265648 -0.5645658 -0.1802389
+## [2,] -0.40176 -0.234859 -0.3265648 -0.5645658 -0.1802389
+## [3,] -0.40176 -0.234859 -0.3265648 -0.5645658 -0.1802389
+## [4,] -0.40176 -0.234859 -0.3265648 -0.5645658 -0.1802389
+## [5,] -0.40176 -0.234859 -0.3265648 -0.5645658 -0.1802389
+## [6,] -0.40176 -0.234859 -0.3265648 -0.5645658 -0.1802389</code></pre>
 <p>En este análisis se utiliza k-means sobre una combinación de
 variables numéricas y binarias. Por ello, los resultados representan
 agrupaciones obtenidas bajo esta representación de los datos y no
@@ -3651,15 +3674,18 @@ inicializaciones que kmeans()</p>
 )</code></pre>
 <p><img role="img" aria-label src="data:image/png;base64,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" alt width="672" /></p>
 <pre class="r"><code>ls()</code></pre>
-<pre><code>##  [1] &quot;anime&quot;                    &quot;anime_crudo&quot;              &quot;anime_gen_long&quot;           &quot;anime_limpio&quot;            
-##  [5] &quot;anime_pca&quot;                &quot;anime_pca_generos&quot;        &quot;clasificacion&quot;            &quot;coordenadas_pca&quot;         
-##  [9] &quot;cor_mat&quot;                  &quot;datos_api&quot;                &quot;datos_clustering&quot;         &quot;datos_pca&quot;               
-## [13] &quot;df_base_ligera&quot;           &quot;diccionario_anime&quot;        &quot;dummies_format&quot;           &quot;dummies_gen&quot;             
-## [17] &quot;filas_validas&quot;            &quot;format_binario&quot;           &quot;Frecxform&quot;                &quot;generos_binarios&quot;        
-## [21] &quot;generos_separados&quot;        &quot;inercia&quot;                  &quot;k&quot;                        &quot;matriz_clustering&quot;       
-## [25] &quot;matriz_clustering_scaled&quot; &quot;metricas_gen&quot;             &quot;pca&quot;                      &quot;popvscal&quot;                
-## [29] &quot;query&quot;                    &quot;respuesta&quot;                &quot;resultados_generos&quot;       &quot;resumen&quot;                 
-## [33] &quot;scoredur&quot;                 &quot;scorefor&quot;                 &quot;tipos_r&quot;                  &quot;top_10_generos&quot;          
+<pre><code>##  [1] &quot;anime&quot;                    &quot;anime_crudo&quot;              &quot;anime_gen_long&quot;          
+##  [4] &quot;anime_limpio&quot;             &quot;anime_pca&quot;                &quot;anime_pca_generos&quot;       
+##  [7] &quot;clasificacion&quot;            &quot;coordenadas_pca&quot;          &quot;cor_mat&quot;                 
+## [10] &quot;datos_api&quot;                &quot;datos_clustering&quot;         &quot;datos_pca&quot;               
+## [13] &quot;df_base_ligera&quot;           &quot;diccionario_anime&quot;        &quot;dummies_format&quot;          
+## [16] &quot;dummies_gen&quot;              &quot;filas_validas&quot;            &quot;format_binario&quot;          
+## [19] &quot;Frecxform&quot;                &quot;generos_binarios&quot;         &quot;generos_separados&quot;       
+## [22] &quot;inercia&quot;                  &quot;k&quot;                        &quot;matriz_clustering&quot;       
+## [25] &quot;matriz_clustering_scaled&quot; &quot;metricas_gen&quot;             &quot;pca&quot;                     
+## [28] &quot;popvscal&quot;                 &quot;query&quot;                    &quot;respuesta&quot;               
+## [31] &quot;resultados_generos&quot;       &quot;resumen&quot;                  &quot;scoredur&quot;                
+## [34] &quot;scorefor&quot;                 &quot;tipos_r&quot;                  &quot;top_10_generos&quot;          
 ## [37] &quot;top_generos&quot;              &quot;top15&quot;                    &quot;vars_num&quot;</code></pre>
 <pre class="r"><code># K-MEANS para k = 3
 
@@ -3672,9 +3698,9 @@ km3 &lt;- kmeans(
 )
 
 gc()</code></pre>
-<pre><code>##            used  (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells  2630623 140.5    4880521 260.7  3511608 187.6
-## Vcells 60101852 458.6   97693983 745.4 79086031 603.4</code></pre>
+<pre><code>##            used (Mb) gc trigger  (Mb) max used  (Mb)
+## Ncells  2377475  127    3660837 195.6  3660837 195.6
+## Vcells 59501465  454   95660271 729.9 79650062 607.7</code></pre>
 <pre class="r"><code># K-MEANS para k = 4
 
 set.seed(123)
@@ -3687,8 +3713,8 @@ km4 &lt;- kmeans(
 
 gc()</code></pre>
 <pre><code>##            used  (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells  2630677 140.5    4880521 260.7  3511608 187.6
-## Vcells 60109108 458.6   97693983 745.4 79086031 603.4</code></pre>
+## Ncells  2377529 127.0    3660837 195.6  3660837 195.6
+## Vcells 59508720 454.1   95660271 729.9 79650062 607.7</code></pre>
 <pre class="r"><code># K-MEANS para k = 5
 
 set.seed(123)
@@ -3701,20 +3727,23 @@ km5 &lt;- kmeans(
 
 gc()</code></pre>
 <pre><code>##            used  (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells  2630738 140.5    4880521 260.7  3511608 187.6
-## Vcells 60116402 458.7   97693983 745.4 79086031 603.4</code></pre>
+## Ncells  2377590 127.0    3660837 195.6  3660837 195.6
+## Vcells 59516014 454.1   95660271 729.9 79650062 607.7</code></pre>
 <pre class="r"><code>ls()</code></pre>
-<pre><code>##  [1] &quot;anime&quot;                    &quot;anime_crudo&quot;              &quot;anime_gen_long&quot;           &quot;anime_limpio&quot;            
-##  [5] &quot;anime_pca&quot;                &quot;anime_pca_generos&quot;        &quot;clasificacion&quot;            &quot;coordenadas_pca&quot;         
-##  [9] &quot;cor_mat&quot;                  &quot;datos_api&quot;                &quot;datos_clustering&quot;         &quot;datos_pca&quot;               
-## [13] &quot;df_base_ligera&quot;           &quot;diccionario_anime&quot;        &quot;dummies_format&quot;           &quot;dummies_gen&quot;             
-## [17] &quot;filas_validas&quot;            &quot;format_binario&quot;           &quot;Frecxform&quot;                &quot;generos_binarios&quot;        
-## [21] &quot;generos_separados&quot;        &quot;inercia&quot;                  &quot;k&quot;                        &quot;km3&quot;                     
-## [25] &quot;km4&quot;                      &quot;km5&quot;                      &quot;matriz_clustering&quot;        &quot;matriz_clustering_scaled&quot;
-## [29] &quot;metricas_gen&quot;             &quot;pca&quot;                      &quot;popvscal&quot;                 &quot;query&quot;                   
-## [33] &quot;respuesta&quot;                &quot;resultados_generos&quot;       &quot;resumen&quot;                  &quot;scoredur&quot;                
-## [37] &quot;scorefor&quot;                 &quot;tipos_r&quot;                  &quot;top_10_generos&quot;           &quot;top_generos&quot;             
-## [41] &quot;top15&quot;                    &quot;vars_num&quot;</code></pre>
+<pre><code>##  [1] &quot;anime&quot;                    &quot;anime_crudo&quot;              &quot;anime_gen_long&quot;          
+##  [4] &quot;anime_limpio&quot;             &quot;anime_pca&quot;                &quot;anime_pca_generos&quot;       
+##  [7] &quot;clasificacion&quot;            &quot;coordenadas_pca&quot;          &quot;cor_mat&quot;                 
+## [10] &quot;datos_api&quot;                &quot;datos_clustering&quot;         &quot;datos_pca&quot;               
+## [13] &quot;df_base_ligera&quot;           &quot;diccionario_anime&quot;        &quot;dummies_format&quot;          
+## [16] &quot;dummies_gen&quot;              &quot;filas_validas&quot;            &quot;format_binario&quot;          
+## [19] &quot;Frecxform&quot;                &quot;generos_binarios&quot;         &quot;generos_separados&quot;       
+## [22] &quot;inercia&quot;                  &quot;k&quot;                        &quot;km3&quot;                     
+## [25] &quot;km4&quot;                      &quot;km5&quot;                      &quot;matriz_clustering&quot;       
+## [28] &quot;matriz_clustering_scaled&quot; &quot;metricas_gen&quot;             &quot;pca&quot;                     
+## [31] &quot;popvscal&quot;                 &quot;query&quot;                    &quot;respuesta&quot;               
+## [34] &quot;resultados_generos&quot;       &quot;resumen&quot;                  &quot;scoredur&quot;                
+## [37] &quot;scorefor&quot;                 &quot;tipos_r&quot;                  &quot;top_10_generos&quot;          
+## [40] &quot;top_generos&quot;              &quot;top15&quot;                    &quot;vars_num&quot;</code></pre>
 <pre class="r"><code>library(cluster)
 
 set.seed(123)
@@ -3830,13 +3859,14 @@ diez géneros seleccionados.</p>
   summarise( across( c( Comedy, Action, Fantasy, Adventure, Drama, `Sci-Fi`, Romance, `Slice of Life`, Supernatural, Hentai ), mean ) ) 
 generos_k5</code></pre>
 <pre><code>## # A tibble: 5 × 11
-##   cluster_k5 Comedy Action Fantasy Adventure Drama `Sci-Fi` Romance `Slice of Life` Supernatural  Hentai
-##        &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;   &lt;dbl&gt;
-## 1          1  0.460  0.410   0.299     0.294 0.299    0.238   0.243          0.207        0.157  0      
-## 2          2  0.301  0.373   0.314     0.323 0.336    0.250   0.124          0.128        0.115  0.00241
-## 3          3  0.555  0.181   0.190     0.138 0.107    0.136   0.120          0.225        0.109  0.0125 
-## 4          4  0.393  0.371   0.395     0.212 0.128    0.132   0.156          0.194        0.106  0.0274 
-## 5          5  0.274  0.225   0.155     0.132 0.132    0.159   0.178          0.0733       0.0877 0.439</code></pre>
+##   cluster_k5 Comedy Action Fantasy Adventure Drama `Sci-Fi` Romance `Slice of Life` Supernatural
+##        &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;        &lt;dbl&gt;
+## 1          1  0.460  0.410   0.299     0.294 0.299    0.238   0.243          0.207        0.157 
+## 2          2  0.301  0.373   0.314     0.323 0.336    0.250   0.124          0.128        0.115 
+## 3          3  0.555  0.181   0.190     0.138 0.107    0.136   0.120          0.225        0.109 
+## 4          4  0.393  0.371   0.395     0.212 0.128    0.132   0.156          0.194        0.106 
+## 5          5  0.274  0.225   0.155     0.132 0.132    0.159   0.178          0.0733       0.0877
+## # ℹ 1 more variable: Hentai &lt;dbl&gt;</code></pre>
 <p>Los géneros más frecuentes varían entre los clusters. Comedy, Action
 y Fantasy aparecen entre los géneros con mayor presencia en varios
 grupos. Debido a que un anime puede tener más de un género, estas

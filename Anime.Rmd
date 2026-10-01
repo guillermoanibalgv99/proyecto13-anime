@@ -1,8 +1,13 @@
 ---
-title: "Análisis De Perfiles De Anime"
-author: "Equipo 13"
+title: "Anime"
+author: 
+  - "Mendoza Díaz Citlali"
+  - "Peña Romero Gerardo"
+  - "Ramírez Pérez Gerardo Enrique"
+  - "Vásquez Rodríguez Iván"
+  - "Galindez Vergara Guillermo Anibal"
 date: "`r Sys.Date()`"
-output:
+output: 
   html_document:
     theme: cosmo
     toc: true
